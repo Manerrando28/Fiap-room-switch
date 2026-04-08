@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -6,54 +6,78 @@ export default function Menu() {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Menu Principal</Text>
+    <ImageBackground
+      source={require('../../assets/images/Menu.png')}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
 
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => router.push('/salas')}
-      >
-        <Ionicons name="business" size={28} color="#6200ee" />
-        <Text style={styles.cardText}>Salas</Text>
-      </TouchableOpacity>
+        {/* NOVO TEXTO */}
+        <Text style={styles.fiap}>FIAP</Text>
 
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => router.push('/reportar')}
-      >
-        <Ionicons name="alert-circle" size={28} color="#e53935" />
-        <Text style={styles.cardText}>Reportar Problema</Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={styles.title}>Menu Principal</Text>
+
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => router.push('/salas')}
+        >
+          <Ionicons name="business" size={28} color="#6200ee" />
+          <Text style={styles.cardText}>Salas</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => router.push('/reportar')}
+        >
+          <Ionicons name="alert-circle" size={28} color="#e53935" />
+          <Text style={styles.cardText}>Reportar Problema</Text>
+        </TouchableOpacity>
+
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+  },
+
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
     padding: 20,
     justifyContent: 'center',
   },
+
+  // 🔥 NOVO ESTILO
+  fiap: {
+    fontSize: 100,
+    fontFamily: 'Montserrat_700Bold',
+    textAlign: 'center',
+    color: '#ffffff', // vermelho estilo FIAP
+    marginBottom: 100,
+    letterSpacing: 3,
+  },
+
   title: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 30,
     textAlign: 'center',
-    color: '#333',
+    color: '#fff',
   },
+
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffffcc',
     padding: 15,
     marginBottom: 15,
     borderRadius: 10,
-    elevation: 3, // sombra no Android
-    shadowColor: '#000', // sombra no iOS
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
   },
+
   cardText: {
     fontSize: 18,
     marginLeft: 10,
