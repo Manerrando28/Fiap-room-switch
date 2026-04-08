@@ -28,7 +28,7 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 **Gerenciamento de Estado Centralizado:** No backend do front-end, a aplicação utiliza um contexto global (SalaContext). Essa tecnologia permite que as informações sobre o status das salas sejam sincronizadas em tempo real por toda a plataforma, assegurando a integridade dos dados e uma manutenção de código muito mais escalável.
 
 
-## 💻 Como Rodar o Projeto?
+## 💻Como Rodar o Projeto?
 ### Pré-requisitos:
 - Node.js (versão LTS);
 - Expo CLI (ou usar npx expo);
@@ -36,35 +36,35 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 
 
 ### Passo a passo:
-``bash``
+**1.** `git clone https://github.com/Manerrando28/Fiap-room-switch.git`
 
-`1. git clone https://github.com/Manerrando28/Fiap-room-switch.git`
+**2.** `cd fiap-room-switch`
 
-`2. cd fiap-room-switch`
+**3.** `npm install`
 
-`3. npm install`
+**4.** `npx expo start`
 
-`4. npx expo start`
-- *Escaneie o QR Code no Expo Go para rodar no celular.*
+**5.** Escaneie o QR Code no Expo Go para rodar no celular.
 
 
-## 🎥Demonstração
-### Prints das telas:
+## 📸Printscreen's das Telas
 
-### Tela inicial (index)
+### 1. Tela Inicial
 ![telaincial](https://github.com/user-attachments/assets/d20de10d-332e-47b2-b15b-b1ea38a1037c)
 
-### Menu
-![Menu](https://github.com/user-attachments/assets/6465c63a-0865-44da-b452-93ab4f4e4991)
 
-### Salas
+### 2. Tela Menu
+![menu_principal](https://github.com/user-attachments/assets/3c3726d4-04e5-4cc2-9a00-c204e983b573)
 
-![Salas](https://github.com/user-attachments/assets/571a5013-c93c-4e82-89ff-fdfa561792d5)
 
-### Reportar
-![Reportar](https://github.com/user-attachments/assets/0f994141-22ef-48bd-8dee-f2829d8940ae)
+### 3. Tela Salas
+![tela_da_sala](https://github.com/user-attachments/assets/c2f0a00b-eb35-4a27-92f1-87d7946241ef)
 
-Link (https://youtube.com/shorts/vMInhhiL7l8?si=QklPxMjBnzWfehp3).
+
+### 4. Tela Reportar
+![tela_reportar](https://github.com/user-attachments/assets/0bf64ada-4c63-4522-a204-ad66a15fb7cc)
+
+*Link do vídeo do Youtube* (https://youtube.com/shorts/vMInhhiL7l8?si=QklPxMjBnzWfehp3).
 
 
 ## 🛠️Decisões Técnicas
@@ -77,9 +77,9 @@ Link (https://youtube.com/shorts/vMInhhiL7l8?si=QklPxMjBnzWfehp3).
 - Evita “prop drilling” e facilita manutenção.
 
 ### **Hooks utilizados**
-- **`useContext:`** para acessar dados do SalaContext.
-- **`useState:`** para estados locais.
-- **`useEffect:`** para inicialização e reações a mudanças.
+- **`useContext:`** Para acessar dados do SalaContext.
+- **`useState:`** Para estados locais.
+- **`useEffect:`** Para inicialização e reações a mudanças.
 
 ### **Navegação organizada**
 - Telas principais (index, menu, salas, reportar) dentro de (tabs).
