@@ -51,6 +51,7 @@ Abaixo vai o link para o nosso video rapido mostrando o projeto!
 
 https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 
+
 ## 📸Printscreen's das Telas
 
 ### 1. Tela Inicial
