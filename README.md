@@ -3,7 +3,6 @@
 ## 👥Integrantes do Grupo:
 - Gabriel Guilherme Leste **RM558638**
 - Gustavo Viega Martins Lopes **RM555885**
-- Gustavo Yuji Osugi **RM555034**
 - Kaio Drago Lima Souza **RM556095**
 - Vitor Rivas Cardoso **RM556404**
 
