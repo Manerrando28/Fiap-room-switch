@@ -2,50 +2,52 @@ import { Stack } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { SalaProvider } from '../Context/SalaContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
+import { View, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Layout() {
+  const [loading, setLoading] = useState(true);
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    const logged = await AsyncStorage.getItem('logged');
+
+    setIsLogged(logged === 'true');
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#000' }}>
+        <ActivityIndicator size="large" color="#ED145B" />
+      </View>
+    );
+  }
+
   return (
     <SalaProvider>
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: '#6200ee' }, // cor do header
-          headerTintColor: '#fff', // cor do texto/ícones
-          headerTitleStyle: { fontWeight: 'bold' }, // título em negrito
+          headerStyle: { backgroundColor: '#000' },
+          headerTintColor: '#fff',
+          headerTitleStyle: { fontWeight: 'bold' },
         }}
+        initialRouteName={isLogged ? 'menu' : 'login'}
       >
-        <Stack.Screen name="index" options={{ title: 'Home' }} />
-
-        <Stack.Screen
-          name="menu"
-          options={{
-            title: 'Menu',
-            headerRight: () => (
-              <Ionicons name="home" size={24} color="#fff" />
-            ),
-          }}
-        />
-
-        <Stack.Screen
-          name="salas"
-          options={{
-            title: 'Salas',
-            headerRight: () => (
-              <Ionicons name="business" size={24} color="#fff" />
-            ),
-          }}
-        />
-
-        <Stack.Screen
-          name="reportar"
-          options={{
-            title: 'Reportar',
-            headerRight: () => (
-              <Ionicons name="alert-circle" size={24} color="#fff" />
-            ),
-          }}
-        />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="register" />
+        <Stack.Screen name="menu" />
+        <Stack.Screen name="salas" />
+        <Stack.Screen name="reportar" />
       </Stack>
-      <Toast /> {/* componente global */}
+
+      <Toast />
     </SalaProvider>
   );
 }
