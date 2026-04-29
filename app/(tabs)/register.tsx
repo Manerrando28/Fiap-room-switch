@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator
+  StyleSheet, ActivityIndicator
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -13,28 +13,60 @@ export default function Register() {
   const [confirmar, setConfirmar] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [submitted, setSubmitted] = useState(false); // 🔥 NOVO
+
+  const [errors, setErrors] = useState({
+    nome: '',
+    email: '',
+    senha: '',
+    confirmar: ''
+  });
+
   const router = useRouter();
 
-  const validarEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validar = () => {
+    let novosErros = {
+      nome: '',
+      email: '',
+      senha: '',
+      confirmar: ''
+    };
+
+    if (!nome) novosErros.nome = 'O nome é obrigatório';
+
+    if (!email) {
+      novosErros.email = 'O e-mail é obrigatório';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      novosErros.email = 'E-mail inválido';
+    }
+
+    if (!senha) {
+      novosErros.senha = 'A senha é obrigatória';
+    } else if (senha.length < 6) {
+      novosErros.senha = 'Mínimo 6 caracteres';
+    }
+
+    if (!confirmar) {
+      novosErros.confirmar = 'Confirme a senha';
+    } else if (senha !== confirmar) {
+      novosErros.confirmar = 'As senhas não coincidem';
+    }
+
+    setErrors(novosErros);
+
+    return (
+      !novosErros.nome &&
+      !novosErros.email &&
+      !novosErros.senha &&
+      !novosErros.confirmar
+    );
   };
 
   const handleRegister = async () => {
-    if (!nome || !email || !senha || !confirmar) {
-      return Alert.alert('Erro', 'Preencha todos os campos');
-    }
+    setSubmitted(true); // 🔥 ativa validação
 
-    if (!validarEmail(email)) {
-      return Alert.alert('Email inválido');
-    }
-
-    if (senha.length < 6) {
-      return Alert.alert('Senha deve ter no mínimo 6 caracteres');
-    }
-
-    if (senha !== confirmar) {
-      return Alert.alert('As senhas não coincidem');
-    }
+    const valido = validar();
+    if (!valido) return;
 
     try {
       setLoading(true);
@@ -44,7 +76,11 @@ export default function Register() {
       if (existingUser) {
         const parsed = JSON.parse(existingUser);
         if (parsed.email === email.trim().toLowerCase()) {
-          return Alert.alert('Erro', 'E-mail já cadastrado');
+          setErrors(prev => ({
+            ...prev,
+            email: 'Este e-mail já está cadastrado'
+          }));
+          return;
         }
       }
 
@@ -63,23 +99,75 @@ export default function Register() {
 
     } catch (error) {
       console.log(error);
-      Alert.alert('Erro ao cadastrar');
     } finally {
       setLoading(false);
     }
   };
 
+  const hasError = Boolean(
+  errors.nome ||
+  errors.email ||
+  errors.senha ||
+  errors.confirmar
+);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Criar Conta</Text>
 
-      <TextInput placeholder="Nome" style={styles.input} onChangeText={setNome} />
-      <TextInput placeholder="Email" style={styles.input} onChangeText={setEmail} autoCapitalize="none" />
-      <TextInput placeholder="Senha" style={styles.input} secureTextEntry onChangeText={setSenha} />
-      <TextInput placeholder="Confirmar senha" style={styles.input} secureTextEntry onChangeText={setConfirmar} />
+      {/* NOME */}
+      <TextInput
+        placeholder="Nome"
+        placeholderTextColor="#aaa"
+        style={styles.input}
+        value={nome}
+        onChangeText={setNome}
+      />
+      {submitted && errors.nome ? <Text style={styles.error}>{errors.nome}</Text> : null}
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Cadastrar</Text>}
+      {/* EMAIL */}
+      <TextInput
+        placeholder="Email"
+        placeholderTextColor="#aaa"
+        style={styles.input}
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+      />
+      {submitted && errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
+
+      {/* SENHA */}
+      <TextInput
+        placeholder="Senha"
+        placeholderTextColor="#aaa"
+        secureTextEntry
+        style={styles.input}
+        value={senha}
+        onChangeText={setSenha}
+      />
+      {submitted && errors.senha ? <Text style={styles.error}>{errors.senha}</Text> : null}
+
+      {/* CONFIRMAR */}
+      <TextInput
+        placeholder="Confirmar senha"
+        placeholderTextColor="#aaa"
+        secureTextEntry
+        style={styles.input}
+        value={confirmar}
+        onChangeText={setConfirmar}
+      />
+      {submitted && errors.confirmar ? <Text style={styles.error}>{errors.confirmar}</Text> : null}
+
+      {/* BOTÃO */}
+      <TouchableOpacity
+        style={[styles.button, submitted && hasError && { opacity: 0.5 }]}
+        onPress={handleRegister}
+        disabled={loading || (submitted && hasError)}
+      >
+        {loading
+          ? <ActivityIndicator color="#fff" />
+          : <Text style={styles.buttonText}>Cadastrar</Text>
+        }
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/(tabs)/login')}>
@@ -90,10 +178,44 @@ export default function Register() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, justifyContent:'center', padding:20, backgroundColor:'#000' },
-  title: { color:'#fff', fontSize:26, textAlign:'center', marginBottom:20 },
-  input: { backgroundColor:'#111', color:'#fff', padding:12, marginBottom:12, borderRadius:10 },
-  button: { backgroundColor:'#ED145B', padding:14, borderRadius:10 },
-  buttonText: { color:'#fff', textAlign:'center', fontWeight:'bold' },
-  link: { color:'#ED145B', textAlign:'center', marginTop:15 }
+  container: {
+    flex:1,
+    justifyContent:'center',
+    padding:20,
+    backgroundColor:'#000'
+  },
+  title: {
+    color:'#fff',
+    fontSize:26,
+    textAlign:'center',
+    marginBottom:20
+  },
+  input: {
+    backgroundColor:'#111',
+    color:'#fff',
+    padding:12,
+    marginBottom:5,
+    borderRadius:10
+  },
+  error: {
+    color:'red',
+    marginBottom:10,
+    marginLeft:5
+  },
+  button: {
+    backgroundColor:'#ED145B',
+    padding:14,
+    borderRadius:10,
+    marginTop:10
+  },
+  buttonText: {
+    color:'#fff',
+    textAlign:'center',
+    fontWeight:'bold'
+  },
+  link: {
+    color:'#ED145B',
+    textAlign:'center',
+    marginTop:15
+  }
 });

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator
+  StyleSheet, ActivityIndicator
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -11,90 +11,110 @@ export default function Login() {
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [errors, setErrors] = useState({
+    email: '',
+    senha: ''
+  });
+
   const router = useRouter();
 
-  const handleLogin = async () => {
-    if (!email || !senha) {
-      return Alert.alert('Erro', 'Preencha todos os campos');
+  // 🔥 VALIDAÇÃO EM TEMPO REAL
+  useEffect(() => {
+    validar();
+  }, [email, senha]);
+
+  const validar = () => {
+    let novosErros = { email: '', senha: '' };
+
+    if (!email) {
+      novosErros.email = 'O e-mail é obrigatório';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      novosErros.email = 'E-mail inválido';
     }
+
+    if (!senha) {
+      novosErros.senha = 'A senha é obrigatória';
+    } else if (senha.length < 6) {
+      novosErros.senha = 'Mínimo 6 caracteres';
+    }
+
+    setErrors(novosErros);
+
+    return !novosErros.email && !novosErros.senha;
+  };
+
+  const handleLogin = async () => {
+    const valido = validar();
+
+    if (!valido) return;
 
     try {
       setLoading(true);
 
-      const emailFormatado = email.trim().toLowerCase();
-      const senhaFormatada = senha.trim();
-
       const user = await AsyncStorage.getItem('user');
 
       if (!user) {
-        return Alert.alert('Erro', 'Nenhum usuário cadastrado');
+        setErrors(prev => ({ ...prev, email: 'Usuário não encontrado' }));
+        return;
       }
 
-      let parsed;
-      try {
-        parsed = JSON.parse(user);
-      } catch {
-        return Alert.alert('Erro', 'Dados do usuário corrompidos');
-      }
-
-      if (!parsed?.email || !parsed?.senha) {
-        return Alert.alert('Erro', 'Usuário inválido');
-      }
+      const parsed = JSON.parse(user);
 
       if (
-        parsed.email === emailFormatado &&
-        parsed.senha === senhaFormatada
+        parsed.email === email.trim().toLowerCase() &&
+        parsed.senha === senha.trim()
       ) {
         await AsyncStorage.setItem('logged', 'true');
-
-        // pequeno delay evita conflito com layout
-        setTimeout(() => {
-          router.replace('/(tabs)/menu');
-        }, 50);
-
+        router.replace('/(tabs)/menu');
       } else {
-        Alert.alert('Erro', 'E-mail ou senha inválidos');
+        setErrors(prev => ({ ...prev, senha: 'E-mail ou senha inválidos' }));
       }
 
     } catch (error) {
-      console.log('Erro no login:', error);
-      Alert.alert('Erro', 'Falha ao realizar login');
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
+  const hasError = errors.email || errors.senha;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
+      {/* EMAIL */}
       <TextInput
         placeholder="Email"
         placeholderTextColor="#888"
         style={styles.input}
+        value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
-        keyboardType="email-address"
       />
+      {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
 
+      {/* SENHA */}
       <TextInput
         placeholder="Senha"
         placeholderTextColor="#888"
         secureTextEntry
         style={styles.input}
+        value={senha}
         onChangeText={setSenha}
       />
+      {errors.senha ? <Text style={styles.error}>{errors.senha}</Text> : null}
 
+      {/* BOTÃO */}
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, hasError && { opacity: 0.5 }]}
         onPress={handleLogin}
-        disabled={loading}
+        disabled={!!hasError || loading}
       >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Entrar</Text>
-        )}
+        {loading
+          ? <ActivityIndicator color="#fff" />
+          : <Text style={styles.buttonText}>Entrar</Text>
+        }
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/(tabs)/register')}>
@@ -124,15 +144,21 @@ const styles = StyleSheet.create({
     backgroundColor:'#111',
     color:'#fff',
     padding:12,
-    marginBottom:12,
+    marginBottom:5,
     borderRadius:10
+  },
+
+  error: {
+    color:'red',
+    marginBottom:10,
+    marginLeft:5
   },
 
   button: {
     backgroundColor:'#ED145B',
     padding:14,
     borderRadius:10,
-    marginTop:5
+    marginTop:10
   },
 
   buttonText: {
