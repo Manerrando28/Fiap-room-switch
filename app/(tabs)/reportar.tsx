@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useContext, useState, useMemo } from 'react';
 import {
   StyleSheet,
@@ -11,7 +11,6 @@ import {
 import Toast from 'react-native-toast-message';
 import { SalaContext } from '../Context/SalaContext';
 
-// 🔥 Tipagem
 type Sala = {
   id: number;
   nome: number;
@@ -25,7 +24,11 @@ export default function Reportar() {
   const [andarSelecionado, setAndarSelecionado] = useState<number | null>(null);
 
   if (!context) {
-    return <Text>Carregando contexto...</Text>;
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <Text style={styles.neonText}>Acessando Banco de Dados...</Text>
+      </View>
+    );
   }
 
   const { salasDisponiveis, reportarProblema, resolverProblema } = context;
@@ -34,35 +37,25 @@ export default function Reportar() {
     return salasDisponiveis
       .filter((sala: Sala) => {
         const matchBusca = sala.nome.toString().includes(busca.trim());
-
-        const matchAndar =
-          andarSelecionado !== null
-            ? Math.floor(sala.nome / 100) === andarSelecionado
-            : true;
-
+        const matchAndar = andarSelecionado !== null ? Math.floor(sala.nome / 100) === andarSelecionado : true;
         return matchBusca && matchAndar;
       })
       .sort((a: Sala, b: Sala) => a.nome - b.nome);
   }, [busca, andarSelecionado, salasDisponiveis]);
 
-  const getStatusColor = (status: Sala['status']) => {
-    if (status === 'Livre') return '#2e7d32';
-    if (status === 'Ocupada') return '#f9a825';
-    return '#c62828';
-  };
-
-  const getStatusBg = (status: Sala['status']) => {
-    if (status === 'Livre') return '#e8f5e9';
-    if (status === 'Ocupada') return '#fff8e1';
-    return '#ffebee';
+  const getStatusNeon = (status: Sala['status']) => {
+    if (status === 'Livre') return '#00FF94';
+    if (status === 'Ocupada') return '#FF9F00';
+    return '#FF003C';
   };
 
   const handleReportar = (id: number, nome: number) => {
     reportarProblema(id);
     Toast.show({
       type: 'error',
-      text1: 'Problema Reportado',
-      text2: `Sala ${nome} marcada como problema`,
+      text1: 'ALERTA DE INCIDENTE',
+      text2: `Sala ${nome} marcada para manutenção técnica.`,
+      visibilityTime: 3000,
     });
   };
 
@@ -70,110 +63,91 @@ export default function Reportar() {
     resolverProblema(id);
     Toast.show({
       type: 'success',
-      text1: 'Resolvido',
-      text2: `Sala ${nome} liberada`,
+      text1: 'PROTOCOLO CONCLUÍDO',
+      text2: `A Sala ${nome} foi reativada no sistema.`,
+      visibilityTime: 3000,
     });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Reportar Problemas</Text>
+    <ScrollView style={{ backgroundColor: '#0D0D0D' }} contentContainerStyle={styles.container}>
+      <View style={styles.headerSection}>
+        <Text style={styles.title}>CENTRAL DE <Text style={styles.neonText}>INCIDENTES</Text></Text>
+        <Text style={styles.subtitle}>Relatório de integridade da infraestrutura</Text>
+      </View>
 
-      {/* 🔍 BUSCA */}
+      {/* 🔍 BUSCA TÉCNICA */}
       <View style={styles.searchContainer}>
+        <MaterialIcons name="qr-code-scanner" size={20} color="#ED145B" />
         <TextInput
-          placeholder="Buscar sala..."
+          placeholder="Filtrar por ID da sala..."
+          placeholderTextColor="#444"
           value={busca}
           onChangeText={setBusca}
           style={styles.search}
         />
         {busca !== '' && (
           <TouchableOpacity onPress={() => setBusca('')}>
-            <MaterialIcons name="close" size={20} />
+            <MaterialIcons name="close" size={20} color="#ED145B" />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* 🧭 FILTRO */}
+      {/* 🧭 SELETOR DE NÍVEL */}
       <View style={styles.filtro}>
         {[1, 2, 3].map((andar) => (
           <TouchableOpacity
             key={andar}
-            style={[
-              styles.botaoAndar,
-              andarSelecionado === andar && styles.ativo,
-            ]}
-            onPress={() =>
-              setAndarSelecionado(
-                andarSelecionado === andar ? null : andar
-              )
-            }
+            style={[styles.botaoAndar, andarSelecionado === andar && styles.ativo]}
+            onPress={() => setAndarSelecionado(andarSelecionado === andar ? null : andar)}
           >
-            <Text style={{ color: andarSelecionado === andar ? '#fff' : '#000' }}>
-              {andar}º
+            <Text style={[styles.textAndar, andarSelecionado === andar && { color: '#FFF' }]}>
+              NÍVEL 0{andar}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* 📋 LISTA */}
+      {/* 📋 LISTA DE DIAGNÓSTICO */}
       {salasFiltradas.map((sala: Sala) => (
         <View
           key={sala.id}
           style={[
             styles.card,
-            { borderLeftColor: getStatusColor(sala.status) },
+            { borderLeftColor: getStatusNeon(sala.status) },
+            sala.status === 'Problema' && styles.cardAlert
           ]}
         >
           <View style={styles.cardHeader}>
-            <MaterialIcons
-              name={
-                sala.status === 'Livre'
-                  ? 'check-circle'
-                  : sala.status === 'Ocupada'
-                  ? 'schedule'
-                  : 'error'
-              }
+            <MaterialCommunityIcons
+              name={sala.status === 'Problema' ? 'alert-octagon' : 'shield-check-outline'}
               size={24}
-              color={getStatusColor(sala.status)}
+              color={getStatusNeon(sala.status)}
             />
-
-            <Text style={styles.salaNome}>
-              Sala {sala.nome} (Andar {Math.floor(sala.nome / 100)})
-            </Text>
+            <View style={{ marginLeft: 12 }}>
+              <Text style={styles.salaNome}>SALA {sala.nome}</Text>
+              <Text style={styles.statusLabel}>STATUS: {sala.status.toUpperCase()}</Text>
+            </View>
           </View>
 
-          {/* 🏷️ STATUS */}
-          <View
-            style={[
-              styles.badge,
-              { backgroundColor: getStatusBg(sala.status) },
-            ]}
-          >
-            <Text style={{ color: getStatusColor(sala.status) }}>
-              {sala.status}
-            </Text>
-          </View>
-
-          {/* 🎯 BOTÕES */}
-          <View style={styles.buttons}>
-            {sala.status !== 'Problema' && (
+          <View style={styles.actionArea}>
+            {sala.status !== 'Problema' ? (
               <TouchableOpacity
-                style={[styles.button, styles.reportButton]}
+                activeOpacity={0.7}
+                style={[styles.mainButton, { backgroundColor: 'rgba(255, 0, 60, 0.15)', borderColor: '#FF003C' }]}
                 onPress={() => handleReportar(sala.id, sala.nome)}
               >
-                <MaterialIcons name="error" size={18} color="#fff" />
-                <Text style={styles.buttonText}>Reportar</Text>
+                <MaterialIcons name="report-problem" size={18} color="#FF003C" />
+                <Text style={[styles.buttonText, { color: '#FF003C' }]}>REPORTAR FALHA</Text>
               </TouchableOpacity>
-            )}
-
-            {sala.status === 'Problema' && (
+            ) : (
               <TouchableOpacity
-                style={[styles.button, styles.resolveButton]}
+                activeOpacity={0.7}
+                style={[styles.mainButton, { backgroundColor: 'rgba(0, 255, 148, 0.15)', borderColor: '#00FF94' }]}
                 onPress={() => handleResolver(sala.id, sala.nome)}
               >
-                <MaterialIcons name="check-circle" size={18} color="#fff" />
-                <Text style={styles.buttonText}>Resolver</Text>
+                <MaterialIcons name="build" size={18} color="#00FF94" />
+                <Text style={[styles.buttonText, { color: '#00FF94' }]}>EXECUTAR REPARO</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -184,102 +158,63 @@ export default function Reportar() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#f2f4f7',
-  },
-
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 15,
-  },
+  container: { padding: 20, paddingBottom: 40 },
+  headerSection: { marginBottom: 25 },
+  title: { fontSize: 24, fontWeight: '900', color: '#FFF', letterSpacing: 1 },
+  neonText: { color: '#ED145B', textShadowColor: '#ED145B', textShadowRadius: 10 },
+  subtitle: { color: '#666', fontSize: 11, fontWeight: '700', marginTop: 4, textTransform: 'uppercase' },
 
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    elevation: 2,
-  },
-
-  search: {
-    flex: 1,
-    padding: 10,
-  },
-
-  filtro: {
-    flexDirection: 'row',
-    marginBottom: 15,
-  },
-
-  botaoAndar: {
-    paddingVertical: 8,
+    backgroundColor: '#161616',
+    borderRadius: 12,
     paddingHorizontal: 15,
-    borderRadius: 20,
-    backgroundColor: '#e0e0e0',
-    marginRight: 8,
+    marginBottom: 20,
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#222',
   },
+  search: { flex: 1, padding: 10, color: '#FFF', fontSize: 14 },
 
-  ativo: {
-    backgroundColor: '#6200ee',
+  filtro: { flexDirection: 'row', marginBottom: 20 },
+  botaoAndar: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#161616',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#333',
   },
+  ativo: { backgroundColor: '#ED145B', borderColor: '#ED145B' },
+  textAndar: { color: '#888', fontWeight: 'bold', fontSize: 11 },
 
   card: {
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 12,
-    backgroundColor: '#fff',
-    borderLeftWidth: 6,
-    elevation: 3,
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 15,
+    backgroundColor: '#161616',
+    borderLeftWidth: 4,
+    borderWidth: 1,
+    borderColor: '#222',
   },
+  cardAlert: {
+    borderColor: 'rgba(255, 0, 60, 0.3)',
+    backgroundColor: '#1A0D0F',
+  },
+  cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
+  salaNome: { fontSize: 18, fontWeight: '900', color: '#FFF' },
+  statusLabel: { fontSize: 10, color: '#555', fontWeight: 'bold', marginTop: 2 },
 
-  cardHeader: {
+  actionArea: { borderTopWidth: 1, borderTopColor: '#222', paddingTop: 15 },
+  mainButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
   },
-
-  salaNome: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-
-  badge: {
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-    marginTop: 5,
-  },
-
-  buttons: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-
-  reportButton: {
-    backgroundColor: '#c62828',
-  },
-
-  resolveButton: {
-    backgroundColor: '#2e7d32',
-  },
-
-  buttonText: {
-    color: '#fff',
-    marginLeft: 6,
-    fontWeight: 'bold',
-  },
+  buttonText: { marginLeft: 8, fontWeight: '900', fontSize: 12, letterSpacing: 1 },
 });
