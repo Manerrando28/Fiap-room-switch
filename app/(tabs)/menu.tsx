@@ -29,7 +29,6 @@ export default function Menu() {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('logged');
-      // Agora redireciona para a raiz (index.tsx de boas-vindas)
       router.replace('/'); 
     } catch (error) {
       console.log('Erro ao sair', error);
@@ -96,7 +95,7 @@ export default function Menu() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0D0D0D', // Preto FIAP
+    backgroundColor: '#0D0D0D',
   },
   scrollContent: {
     padding: 25,
