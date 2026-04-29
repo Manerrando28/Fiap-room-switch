@@ -1,20 +1,49 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
+  const checkLogin = async () => {
+    try {
+      const logged = await AsyncStorage.getItem('logged');
+
+      if (logged === 'true') {
+        router.replace('/menu');
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log('Erro ao verificar login:', error);
+      setLoading(false);
+    }
+  };
+
+  // 🔥 Tela de loading (antes de renderizar styles)
+  if (loading) {
+    return (
+      <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#000' }}>
+        <ActivityIndicator size="large" color="#ED145B" />
+      </View>
+    );
+  }
 
   return (
     <ImageBackground
       source={require('../../assets/images/Menu.png')}
       style={styles.container}
     >
-      {/* overlay escuro */}
       <View style={styles.overlay}>
 
-        {/* LOGO + GLOW */}
+        {/* LOGO */}
         <View style={styles.logoWrapper}>
           <View style={styles.glow} />
           <Ionicons name="business" size={80} color="#ED145B" />
@@ -61,7 +90,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  /* LOGO */
   logoWrapper: {
     marginBottom: 30,
     alignItems: 'center',
@@ -77,7 +105,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 
-  /* TEXTOS */
   textGroup: {
     marginBottom: 50,
     alignItems: 'center',
@@ -97,7 +124,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  /* BOTÃO */
   button: {
     width: '100%',
     height: 65,
@@ -125,7 +151,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  /* FOOTER */
   footer: {
     position: 'absolute',
     bottom: 40,

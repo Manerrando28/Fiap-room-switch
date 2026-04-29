@@ -1,8 +1,7 @@
-import { Stack } from 'expo-router';
+import { Stack, useFocusEffect } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { SalaProvider } from '../Context/SalaContext';
-import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,16 +9,25 @@ export default function Layout() {
   const [loading, setLoading] = useState(true);
   const [isLogged, setIsLogged] = useState(false);
 
-  useEffect(() => {
-    checkLogin();
-  }, []);
-
   const checkLogin = async () => {
-    const logged = await AsyncStorage.getItem('logged');
-
-    setIsLogged(logged === 'true');
-    setLoading(false);
+    try {
+      const logged = await AsyncStorage.getItem('logged');
+      setIsLogged(logged === 'true');
+    } catch (error) {
+      console.log('Erro ao verificar login:', error);
+      setIsLogged(false);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // 🔥 Atualiza sempre que a tela ganha foco (resolve logout/login)
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      checkLogin();
+    }, [])
+  );
 
   if (loading) {
     return (
