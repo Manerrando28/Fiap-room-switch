@@ -1,28 +1,30 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, Alert, ActivityIndicator
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 export default function Register() {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [confirmar, setConfirmar] = useState('');
+  const [nome, setNome] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [senha, setSenha] = useState<string>('');
+  const [confirmar, setConfirmar] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
-  // ✅ valida email correto
-  const validarEmail = (email) => {
+  // ✅ tipado corretamente
+  const validarEmail = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleRegister = async () => {
-    // ❌ campos vazios
+  const handleRegister = async (): Promise<void> => {
     if (!nome || !email || !senha || !confirmar) {
       return Alert.alert('Erro', 'Preencha todos os campos');
     }
 
-    // ❌ email inválido
     if (!validarEmail(email)) {
       return Alert.alert(
         'Email inválido',
@@ -30,7 +32,6 @@ export default function Register() {
       );
     }
 
-    // ❌ senha fraca
     if (senha.length < 6) {
       return Alert.alert(
         'Senha inválida',
@@ -38,20 +39,42 @@ export default function Register() {
       );
     }
 
-    // ❌ senhas diferentes
     if (senha !== confirmar) {
       return Alert.alert('Erro', 'As senhas não coincidem');
     }
 
-    // 💾 salva usuário
-    await AsyncStorage.setItem(
-      'user',
-      JSON.stringify({ nome, email, senha })
-    );
+    try {
+      setLoading(true);
 
-    Alert.alert('Sucesso', 'Conta criada com sucesso!');
+      const existingUser = await AsyncStorage.getItem('user');
 
-    router.replace('/login');
+      if (existingUser) {
+        const parsed = JSON.parse(existingUser);
+
+        if (parsed.email === email) {
+          return Alert.alert('Erro', 'Este e-mail já está cadastrado');
+        }
+      }
+
+      await AsyncStorage.setItem(
+        'user',
+        JSON.stringify({ nome, email, senha })
+      );
+
+      await AsyncStorage.setItem('logged', 'true');
+
+      Alert.alert('Sucesso', 'Conta criada com sucesso!');
+
+      setTimeout(() => {
+        router.replace('/menu');
+      }, 100);
+
+    } catch (error) {
+      console.log('Erro ao cadastrar:', error);
+      Alert.alert('Erro', 'Falha ao criar conta');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,8 +113,20 @@ export default function Register() {
         onChangeText={setConfirmar}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleRegister}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Cadastrar</Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push('/login')}>
+        <Text style={styles.link}>Já tem conta? Fazer login</Text>
       </TouchableOpacity>
     </View>
   );
@@ -117,14 +152,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#111',
     color: '#fff',
     padding: 12,
-    marginBottom: 10,
-    borderRadius: 8,
+    marginBottom: 12,
+    borderRadius: 10,
   },
 
   button: {
     backgroundColor: '#ED145B',
-    padding: 12,
-    borderRadius: 8,
+    padding: 14,
+    borderRadius: 10,
     marginTop: 10,
   },
 
@@ -132,5 +167,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+
+  link: {
+    color: '#ED145B',
+    textAlign: 'center',
+    marginTop: 15,
   },
 });

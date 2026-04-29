@@ -1,37 +1,62 @@
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 
 export default function Menu() {
   const router = useRouter();
   const [nome, setNome] = useState('');
-
-  useEffect(() => {
-    checkUser();
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   const checkUser = async () => {
-    const logged = await AsyncStorage.getItem('logged');
+    try {
+      const logged = await AsyncStorage.getItem('logged');
 
-    if (logged !== 'true') {
+      if (logged !== 'true') {
+        router.replace('/login');
+        return;
+      }
+
+      const user = await AsyncStorage.getItem('user');
+
+      if (user) {
+        const parsed = JSON.parse(user);
+        setNome(parsed.nome);
+      }
+    } catch (error) {
+      console.log('Erro ao verificar usuário:', error);
       router.replace('/login');
-      return;
-    }
-
-    const user = await AsyncStorage.getItem('user');
-
-    if (user) {
-      const parsed = JSON.parse(user);
-      setNome(parsed.nome);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // 🔥 Atualiza sempre que volta pra tela
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      checkUser();
+    }, [])
+  );
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('logged');
-    router.replace('/login');
+    try {
+      await AsyncStorage.multiRemove(['logged', 'user']);
+      router.replace('/login');
+    } catch (error) {
+      console.log('Erro ao fazer logout:', error);
+    }
   };
+
+  // 🔥 Loading antes de renderizar
+  if (loading) {
+    return (
+      <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#000' }}>
+        <ActivityIndicator size="large" color="#ED145B" />
+      </View>
+    );
+  }
 
   return (
     <ImageBackground
@@ -41,15 +66,12 @@ export default function Menu() {
     >
       <View style={styles.overlay}>
 
-        {/* FIAP TITLE */}
         <Text style={styles.fiap}>FIAP</Text>
 
-        {/* USER */}
         <Text style={styles.welcome}>Bem-vindo, {nome}</Text>
 
         <Text style={styles.title}>Menu Principal</Text>
 
-        {/* SALAS */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => router.push('/salas')}
@@ -58,7 +80,6 @@ export default function Menu() {
           <Text style={styles.cardText}>Salas</Text>
         </TouchableOpacity>
 
-        {/* REPORTAR */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => router.push('/reportar')}
@@ -67,7 +88,6 @@ export default function Menu() {
           <Text style={styles.cardText}>Reportar Problema</Text>
         </TouchableOpacity>
 
-        {/* LOGOUT */}
         <TouchableOpacity
           style={styles.card}
           onPress={handleLogout}
