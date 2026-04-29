@@ -1,7 +1,7 @@
-import { Stack, useFocusEffect } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { SalaProvider } from '../Context/SalaContext';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,29 +9,48 @@ export default function Layout() {
   const [loading, setLoading] = useState(true);
   const [isLogged, setIsLogged] = useState(false);
 
+  const router = useRouter();
+  const segments = useSegments();
+
+  // 🔥 AGORA REVALIDA SEMPRE QUE A ROTA MUDA
+  useEffect(() => {
+    checkLogin();
+  }, [segments]);
+
   const checkLogin = async () => {
     try {
       const logged = await AsyncStorage.getItem('logged');
       setIsLogged(logged === 'true');
     } catch (error) {
-      console.log('Erro ao verificar login:', error);
-      setIsLogged(false);
+      console.log('Erro ao verificar login', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔥 Atualiza sempre que a tela ganha foco (resolve logout/login)
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      checkLogin();
-    }, [])
-  );
+  useEffect(() => {
+    if (loading) return;
+
+    const currentRoute = segments.join('/');
+
+    const inAuth =
+      currentRoute.includes('login') ||
+      currentRoute.includes('register');
+
+    // 🚫 NÃO LOGADO
+    if (!isLogged && !inAuth) {
+      router.replace('/(tabs)/login');
+    }
+
+    // 🔐 LOGADO
+    if (isLogged && inAuth) {
+      router.replace('/(tabs)/menu');
+    }
+  }, [isLogged, segments, loading]);
 
   if (loading) {
     return (
-      <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#000' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
         <ActivityIndicator size="large" color="#ED145B" />
       </View>
     );
@@ -45,7 +64,6 @@ export default function Layout() {
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
         }}
-        initialRouteName={isLogged ? 'menu' : 'login'}
       >
         <Stack.Screen name="index" />
         <Stack.Screen name="login" />

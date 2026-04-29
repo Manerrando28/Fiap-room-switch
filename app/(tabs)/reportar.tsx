@@ -11,10 +11,17 @@ import {
 import Toast from 'react-native-toast-message';
 import { SalaContext } from '../Context/SalaContext';
 
+// 🔥 Tipagem
+type Sala = {
+  id: number;
+  nome: number;
+  status: 'Livre' | 'Ocupada' | 'Problema';
+};
+
 export default function Reportar() {
   const context = useContext(SalaContext);
 
-  const [busca, setBusca] = useState('');
+  const [busca, setBusca] = useState<string>('');
   const [andarSelecionado, setAndarSelecionado] = useState<number | null>(null);
 
   if (!context) {
@@ -25,24 +32,26 @@ export default function Reportar() {
 
   const salasFiltradas = useMemo(() => {
     return salasDisponiveis
-      .filter((sala) => {
+      .filter((sala: Sala) => {
         const matchBusca = sala.nome.toString().includes(busca.trim());
-        const matchAndar = andarSelecionado
-          ? Math.floor(sala.nome / 100) === andarSelecionado
-          : true;
+
+        const matchAndar =
+          andarSelecionado !== null
+            ? Math.floor(sala.nome / 100) === andarSelecionado
+            : true;
 
         return matchBusca && matchAndar;
       })
-      .sort((a, b) => a.nome - b.nome);
+      .sort((a: Sala, b: Sala) => a.nome - b.nome);
   }, [busca, andarSelecionado, salasDisponiveis]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: Sala['status']) => {
     if (status === 'Livre') return '#2e7d32';
     if (status === 'Ocupada') return '#f9a825';
     return '#c62828';
   };
 
-  const getStatusBg = (status: string) => {
+  const getStatusBg = (status: Sala['status']) => {
     if (status === 'Livre') return '#e8f5e9';
     if (status === 'Ocupada') return '#fff8e1';
     return '#ffebee';
@@ -108,7 +117,7 @@ export default function Reportar() {
       </View>
 
       {/* 📋 LISTA */}
-      {salasFiltradas.map((sala) => (
+      {salasFiltradas.map((sala: Sala) => (
         <View
           key={sala.id}
           style={[
@@ -146,7 +155,7 @@ export default function Reportar() {
             </Text>
           </View>
 
-          {/* 🎯 BOTÕES INTELIGENTES */}
+          {/* 🎯 BOTÕES */}
           <View style={styles.buttons}>
             {sala.status !== 'Problema' && (
               <TouchableOpacity

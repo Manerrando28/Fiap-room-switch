@@ -7,40 +7,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 export default function Register() {
-  const [nome, setNome] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [senha, setSenha] = useState<string>('');
-  const [confirmar, setConfirmar] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [confirmar, setConfirmar] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  // ✅ tipado corretamente
-  const validarEmail = (email: string): boolean => {
+  const validarEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleRegister = async (): Promise<void> => {
+  const handleRegister = async () => {
     if (!nome || !email || !senha || !confirmar) {
       return Alert.alert('Erro', 'Preencha todos os campos');
     }
 
     if (!validarEmail(email)) {
-      return Alert.alert(
-        'Email inválido',
-        'Use o formato correto: usuario@dominio.com'
-      );
+      return Alert.alert('Email inválido');
     }
 
     if (senha.length < 6) {
-      return Alert.alert(
-        'Senha inválida',
-        'A senha deve ter no mínimo 6 caracteres'
-      );
+      return Alert.alert('Senha deve ter no mínimo 6 caracteres');
     }
 
     if (senha !== confirmar) {
-      return Alert.alert('Erro', 'As senhas não coincidem');
+      return Alert.alert('As senhas não coincidem');
     }
 
     try {
@@ -50,28 +43,27 @@ export default function Register() {
 
       if (existingUser) {
         const parsed = JSON.parse(existingUser);
-
-        if (parsed.email === email) {
-          return Alert.alert('Erro', 'Este e-mail já está cadastrado');
+        if (parsed.email === email.trim().toLowerCase()) {
+          return Alert.alert('Erro', 'E-mail já cadastrado');
         }
       }
 
       await AsyncStorage.setItem(
         'user',
-        JSON.stringify({ nome, email, senha })
+        JSON.stringify({
+          nome,
+          email: email.trim().toLowerCase(),
+          senha: senha.trim()
+        })
       );
 
       await AsyncStorage.setItem('logged', 'true');
 
-      Alert.alert('Sucesso', 'Conta criada com sucesso!');
-
-      setTimeout(() => {
-        router.replace('/menu');
-      }, 100);
+      router.replace('/(tabs)/menu');
 
     } catch (error) {
-      console.log('Erro ao cadastrar:', error);
-      Alert.alert('Erro', 'Falha ao criar conta');
+      console.log(error);
+      Alert.alert('Erro ao cadastrar');
     } finally {
       setLoading(false);
     }
@@ -81,97 +73,27 @@ export default function Register() {
     <View style={styles.container}>
       <Text style={styles.title}>Criar Conta</Text>
 
-      <TextInput
-        placeholder="Nome completo"
-        placeholderTextColor="#aaa"
-        style={styles.input}
-        onChangeText={setNome}
-      />
+      <TextInput placeholder="Nome" style={styles.input} onChangeText={setNome} />
+      <TextInput placeholder="Email" style={styles.input} onChangeText={setEmail} autoCapitalize="none" />
+      <TextInput placeholder="Senha" style={styles.input} secureTextEntry onChangeText={setSenha} />
+      <TextInput placeholder="Confirmar senha" style={styles.input} secureTextEntry onChangeText={setConfirmar} />
 
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor="#aaa"
-        style={styles.input}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        placeholder="Senha"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        style={styles.input}
-        onChangeText={setSenha}
-      />
-
-      <TextInput
-        placeholder="Confirmar senha"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        style={styles.input}
-        onChangeText={setConfirmar}
-      />
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleRegister}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Cadastrar</Text>
-        )}
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Cadastrar</Text>}
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/login')}>
-        <Text style={styles.link}>Já tem conta? Fazer login</Text>
+      <TouchableOpacity onPress={() => router.push('/(tabs)/login')}>
+        <Text style={styles.link}>Já tem conta? Login</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#000',
-  },
-
-  title: {
-    color: '#fff',
-    fontSize: 26,
-    textAlign: 'center',
-    marginBottom: 20,
-    fontWeight: 'bold',
-  },
-
-  input: {
-    backgroundColor: '#111',
-    color: '#fff',
-    padding: 12,
-    marginBottom: 12,
-    borderRadius: 10,
-  },
-
-  button: {
-    backgroundColor: '#ED145B',
-    padding: 14,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-
-  link: {
-    color: '#ED145B',
-    textAlign: 'center',
-    marginTop: 15,
-  },
+  container: { flex:1, justifyContent:'center', padding:20, backgroundColor:'#000' },
+  title: { color:'#fff', fontSize:26, textAlign:'center', marginBottom:20 },
+  input: { backgroundColor:'#111', color:'#fff', padding:12, marginBottom:12, borderRadius:10 },
+  button: { backgroundColor:'#ED145B', padding:14, borderRadius:10 },
+  buttonText: { color:'#fff', textAlign:'center', fontWeight:'bold' },
+  link: { color:'#ED145B', textAlign:'center', marginTop:15 }
 });

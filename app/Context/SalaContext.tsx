@@ -1,5 +1,7 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// 🔥 TIPOS
 export type StatusSala = 'Livre' | 'Ocupada' | 'Problema';
 
 export interface Sala {
@@ -20,8 +22,10 @@ interface SalaContextType {
 export const SalaContext = createContext<SalaContextType | null>(null);
 
 export const SalaProvider = ({ children }: { children: React.ReactNode }) => {
+  const [salasDisponiveis, setSalasDisponiveis] = useState<Sala[]>([]);
 
-  function gerarSalas() {
+  // 🔄 GERAR SALAS
+  function gerarSalas(): Sala[] {
     let id = 1;
     const salas: Sala[] = [];
 
@@ -38,59 +42,114 @@ export const SalaProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
 
-    // exemplos
-    salas[1].status = 'Ocupada';
-    salas[1].nomeUsuario = 'Carlos';
+    // exemplos iniciais
+    salas[1] = {
+      ...salas[1],
+      status: 'Ocupada',
+      nomeUsuario: 'Carlos',
+    };
 
-    salas[4].status = 'Problema';
+    salas[4] = {
+      ...salas[4],
+      status: 'Problema',
+      nomeUsuario: undefined,
+    };
 
     return salas;
   }
 
-  const [salasDisponiveis, setSalasDisponiveis] = useState<Sala[]>(gerarSalas());
+  // 🔥 LOAD
+  useEffect(() => {
+    carregarSalas();
+  }, []);
 
+  const carregarSalas = async () => {
+    try {
+      const data = await AsyncStorage.getItem('salas');
+
+      if (data) {
+        const parsed: Sala[] = JSON.parse(data);
+        setSalasDisponiveis(parsed);
+      } else {
+        const iniciais = gerarSalas();
+        setSalasDisponiveis(iniciais);
+        await AsyncStorage.setItem('salas', JSON.stringify(iniciais));
+      }
+    } catch (error) {
+      console.log('Erro ao carregar salas', error);
+    }
+  };
+
+  // 💾 SAVE
+  const salvarSalas = async (novasSalas: Sala[]) => {
+    try {
+      setSalasDisponiveis(novasSalas);
+      await AsyncStorage.setItem('salas', JSON.stringify(novasSalas));
+    } catch (error) {
+      console.log('Erro ao salvar salas', error);
+    }
+  };
+
+  // 🚨 REPORTAR
   const reportarProblema = (idSala: number) => {
-    setSalasDisponiveis(prev =>
-      prev.map(sala =>
-        sala.id === idSala ? { ...sala, status: 'Problema' } : sala
-      )
-    );
+    const novasSalas: Sala[] = salasDisponiveis.map((sala) => {
+      if (sala.id !== idSala) return sala;
+
+      return {
+        ...sala,
+        status: 'Problema',
+        nomeUsuario: undefined,
+      };
+    });
+
+    salvarSalas(novasSalas);
   };
 
+  // ✅ RESOLVER
   const resolverProblema = (idSala: number) => {
-    setSalasDisponiveis(prev =>
-      prev.map(sala =>
-        sala.id === idSala
-          ? { ...sala, status: 'Livre', nomeUsuario: undefined }
-          : sala
-      )
-    );
+    const novasSalas: Sala[] = salasDisponiveis.map((sala) => {
+      if (sala.id !== idSala) return sala;
+
+      return {
+        ...sala,
+        status: 'Livre',
+        nomeUsuario: undefined,
+      };
+    });
+
+    salvarSalas(novasSalas);
   };
 
+  // 📝 RESERVAR
   const reservarSala = (idSala: number, nome: string) => {
-    setSalasDisponiveis(prev =>
-      prev.map(sala => {
-        if (sala.id !== idSala) return sala;
+    const novasSalas: Sala[] = salasDisponiveis.map((sala) => {
+      if (sala.id !== idSala) return sala;
 
-        if (sala.status !== 'Livre') return sala;
+      if (sala.status !== 'Livre') return sala;
 
-        return {
-          ...sala,
-          status: 'Ocupada',
-          nomeUsuario: nome,
-        };
-      })
-    );
+      return {
+        ...sala,
+        status: 'Ocupada',
+        nomeUsuario: nome.trim(),
+      };
+    });
+
+    salvarSalas(novasSalas);
   };
 
+  // 🔓 LIBERAR
   const liberarSala = (idSala: number) => {
-    setSalasDisponiveis(prev =>
-      prev.map(sala =>
-        sala.id === idSala
-          ? { ...sala, status: 'Livre', nomeUsuario: undefined }
-          : sala
-      )
-    );
+    const novasSalas: Sala[] = salasDisponiveis.map((sala) => {
+      if (sala.id !== idSala) return sala;
+
+      return {
+        ...sala,
+        status: 'Livre',
+        nomeUsuario: undefined,
+      };
+    });
+
+    salvarSalas(novasSalas);
   };
 
   return (

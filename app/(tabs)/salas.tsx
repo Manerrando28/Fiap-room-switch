@@ -1,26 +1,30 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useContext, useState, useMemo } from 'react';
 import {
-  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
   View,
   TextInput,
-  Button,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import { SalaContext } from '../Context/SalaContext';
 
-const { width } = Dimensions.get('window');
+// 🔥 TIPAGEM
+type Sala = {
+  id: number;
+  nome: number;
+  status: 'Livre' | 'Ocupada' | 'Problema';
+  nomeUsuario?: string;
+};
 
 export default function Salas() {
   const context = useContext(SalaContext);
 
-  const [salaSelecionada, setSalaSelecionada] = useState<any>(null);
-  const [nome, setNome] = useState('');
-  const [busca, setBusca] = useState('');
+  const [salaSelecionada, setSalaSelecionada] = useState<Sala | null>(null);
+  const [nome, setNome] = useState<string>('');
+  const [busca, setBusca] = useState<string>('');
   const [andarSelecionado, setAndarSelecionado] = useState<number | null>(null);
 
   if (!context) {
@@ -29,26 +33,29 @@ export default function Salas() {
 
   const { salasDisponiveis, reservarSala, liberarSala } = context;
 
-  // 📊 Contadores
+  // 📊 CONTADORES
   const totalLivre = salasDisponiveis.filter(s => s.status === 'Livre').length;
   const totalOcupada = salasDisponiveis.filter(s => s.status === 'Ocupada').length;
   const totalProblema = salasDisponiveis.filter(s => s.status === 'Problema').length;
 
-  // 🔍 Filtro
+  // 🔍 FILTRO
   const salasFiltradas = useMemo(() => {
     return salasDisponiveis
-      .filter(sala => {
+      .filter((sala: Sala) => {
         const matchBusca = sala.nome.toString().includes(busca.trim());
-        const matchAndar = andarSelecionado
-          ? Math.floor(sala.nome / 100) === andarSelecionado
-          : true;
+
+        const matchAndar =
+          andarSelecionado !== null
+            ? Math.floor(sala.nome / 100) === andarSelecionado
+            : true;
 
         return matchBusca && matchAndar;
       })
-      .sort((a, b) => a.nome - b.nome);
+      .sort((a: Sala, b: Sala) => a.nome - b.nome);
   }, [busca, andarSelecionado, salasDisponiveis]);
 
-  function handleSelecionarSala(sala: any) {
+  // 🎯 SELECIONAR SALA
+  function handleSelecionarSala(sala: Sala) {
     if (sala.status === 'Problema') {
       Alert.alert('Indisponível', 'Sala com problema!');
       return;
@@ -63,11 +70,14 @@ export default function Salas() {
     setNome('');
   }
 
+  // 📝 RESERVAR
   function handleReservar() {
-    if (!nome) {
+    if (!nome.trim()) {
       Alert.alert('Erro', 'Digite seu nome!');
       return;
     }
+
+    if (!salaSelecionada) return;
 
     reservarSala(salaSelecionada.id, nome);
 
@@ -77,13 +87,14 @@ export default function Salas() {
     setNome('');
   }
 
-  const getStatusColor = (status: string) => {
+  // 🎨 STATUS
+  const getStatusColor = (status: Sala['status']) => {
     if (status === 'Livre') return '#2e7d32';
     if (status === 'Ocupada') return '#f9a825';
     return '#c62828';
   };
 
-  const getStatusBg = (status: string) => {
+  const getStatusBg = (status: Sala['status']) => {
     if (status === 'Livre') return '#e8f5e9';
     if (status === 'Ocupada') return '#fff8e1';
     return '#ffebee';
@@ -96,8 +107,8 @@ export default function Salas() {
       {/* 📊 STATUS */}
       <View style={styles.stats}>
         <Text>🟢 Livre {totalLivre}</Text>
-        <Text>🟡 Ocuapda {totalOcupada}</Text>
-        <Text>🔴 Manutenção {totalProblema}</Text>
+        <Text>🟡 Ocupada {totalOcupada}</Text>
+        <Text>🔴 Problema {totalProblema}</Text>
       </View>
 
       {/* 🔍 BUSCA */}
@@ -115,7 +126,7 @@ export default function Salas() {
         )}
       </View>
 
-      {/* 🏢 FILTRO ANDAR */}
+      {/* 🏢 FILTRO */}
       <View style={styles.filtro}>
         {[1, 2, 3].map((andar) => (
           <TouchableOpacity
@@ -138,7 +149,7 @@ export default function Salas() {
       </View>
 
       {/* 📋 LISTA */}
-      {salasFiltradas.map((sala) => (
+      {salasFiltradas.map((sala: Sala) => (
         <View key={sala.id}>
           <TouchableOpacity onPress={() => handleSelecionarSala(sala)}>
             <View
@@ -165,7 +176,6 @@ export default function Salas() {
                 </Text>
               </View>
 
-              {/* 🏷️ STATUS BADGE */}
               <View
                 style={[
                   styles.badge,
@@ -204,7 +214,12 @@ export default function Salas() {
                 onChangeText={setNome}
                 style={styles.input}
               />
-              <Button title="Reservar" onPress={handleReservar} />
+
+              <TouchableOpacity style={styles.botaoReservar} onPress={handleReservar}>
+                <Text style={{ color: '#fff', textAlign: 'center' }}>
+                  Reservar
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -322,5 +337,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
+  },
+
+  botaoReservar: {
+    backgroundColor: '#6200ee',
+    padding: 10,
+    borderRadius: 8,
   },
 });
