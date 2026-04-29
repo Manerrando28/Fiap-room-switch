@@ -1,6 +1,7 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { SalaProvider } from './Context/SalaContext';
+import { AuthProvider } from './Context/AuthContext';
 import { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -49,14 +50,11 @@ export default function Layout() {
 
     // 🚫 CASO 1: Usuário NÃO está logado e tenta acessar algo privado (dentro de tabs)
     if (!isLogged && !isPublicRoute) {
-      // Enviamos ele para a tela inicial (index) ou Login. 
-      // Como você quer a tela de boas-vindas primeiro, usamos o replace('/')
       router.replace('/'); 
     }
 
     // 🔐 CASO 2: Usuário ESTÁ logado e tenta voltar para Telas Públicas (Welcome/Login/Register)
     if (isLogged && isPublicRoute) {
-      // Se ele já está logado, manda direto para o Menu principal
       router.replace('/(tabs)/menu');
     }
   }, [isLogged, segments, loading]);
@@ -71,24 +69,26 @@ export default function Layout() {
   }
 
   return (
-    <SalaProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false, // Removemos o header padrão para manter o estilo Cyberpunk
-          contentStyle: { backgroundColor: '#0D0D0D' }, // Garante fundo preto em todas as transições
-        }}
-      >
-        {/* Telas na raiz da pasta /app */}
-        <Stack.Screen name="index" /> 
-        <Stack.Screen name="login" />
-        <Stack.Screen name="register" />
+    <AuthProvider>
+      <SalaProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: '#0D0D0D' },
+          }}
+        >
+          {/* Telas na raiz da pasta /app */}
+          <Stack.Screen name="index" /> 
+          <Stack.Screen name="login" />
+          <Stack.Screen name="register" />
 
-        {/* Grupo de abas (a navegação interna delas é cuidada pelo (tabs)/_layout.tsx) */}
-        <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-      </Stack>
+          {/* Grupo de abas */}
+          <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+        </Stack>
 
-      {/* Camada global de notificações */}
-      <Toast />
-    </SalaProvider>
+        {/* Camada global de notificações */}
+        <Toast />
+      </SalaProvider>
+    </AuthProvider>
   );
 }
