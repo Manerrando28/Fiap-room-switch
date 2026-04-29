@@ -4,9 +4,9 @@ import {
   StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, 
   ScrollView, useWindowDimensions, ImageBackground
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, Stack } from 'expo-router'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth } from './Context/AuthContext'; // ✅ Importa o contexto
 
 export default function Login() {
   const { width, height } = useWindowDimensions();
@@ -19,6 +19,7 @@ export default function Login() {
   const [errors, setErrors] = useState({ email: '', senha: '', auth: '' });
 
   const router = useRouter();
+  const { login } = useAuth(); // ✅ Usa login do contexto
 
   useEffect(() => {
     if (submitted) validar();
@@ -44,27 +45,15 @@ export default function Login() {
     if (!validar()) return;
     try {
       setLoading(true);
-      const userData = await AsyncStorage.getItem('user');
-      if (!userData) {
-        setErrors(prev => ({ ...prev, auth: 'Conta não encontrada.' }));
-        setLoading(false);
-        return;
-      }
-      const user = JSON.parse(userData);
-      if (user.email === email.trim().toLowerCase() && user.senha === senha.trim()) {
-        await AsyncStorage.setItem('logged', 'true');
-        setTimeout(() => router.replace('/(tabs)/menu'), 1200);
-      } else {
-        setErrors(prev => ({ ...prev, auth: 'Dados incorretos.' }));
-        setLoading(false);
-      }
+      await login(email.trim().toLowerCase(), senha.trim()); // ✅ chama login do contexto
+      setTimeout(() => router.replace('/(tabs)/menu'), 1200);
     } catch (error) {
+      setErrors(prev => ({ ...prev, auth: 'Falha na autenticação.' }));
       setLoading(false);
     }
   };
 
   return (
-    // Trocamos a View externa por ImageBackground para envelopar todo o layout
     <ImageBackground 
       source={require('../assets/images/fundo-tela-bar.jpeg')} 
       style={[styles.landingContainer, { width, height }]} 
@@ -76,7 +65,6 @@ export default function Login() {
       >
         <Stack.Screen options={{ headerShown: false }} />
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          {/* O overlay garante que o texto continue legível sobre a imagem */}
           <View style={styles.overlay}>
             
             <Pressable onPress={() => router.back()} style={styles.backButton}>
@@ -109,6 +97,8 @@ export default function Login() {
                     autoCapitalize="none"
                   />
                 </View>
+                {/* ✅ Erro inline abaixo do campo */}
+                {submitted && errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
               </View>
 
               <View style={styles.inputWrapper}>
@@ -124,6 +114,8 @@ export default function Login() {
                     onChangeText={setSenha}
                   />
                 </View>
+                {/* ✅ Erro inline abaixo do campo */}
+                {submitted && errors.senha ? <Text style={styles.errorText}>{errors.senha}</Text> : null}
               </View>
 
               <Pressable onPress={() => router.push('/register')} style={styles.rowLink}>
@@ -131,7 +123,11 @@ export default function Login() {
                 <Text style={styles.linkWhite}>Criar conta</Text>
               </Pressable>
 
-              <Pressable onPress={handleLogin} disabled={loading} style={[styles.mainButton, loading && { opacity: 0.7 }]}>
+              <Pressable 
+                onPress={handleLogin} 
+                disabled={loading || !email || !senha || !!errors.email || !!errors.senha} // ✅ corrigido
+                style={[styles.mainButton, (loading || !!errors.email || !!errors.senha) && { opacity: 0.7 }]}
+              >
                 {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>ENTRAR</Text>}
               </Pressable>
 
@@ -147,13 +143,12 @@ export default function Login() {
 const styles = StyleSheet.create({
   landingContainer: { flex: 1, backgroundColor: '#0D0D0D' },
   scrollContainer: { flexGrow: 1, justifyContent: 'center' },
-  // Adicionado um fundo semitransparente ao overlay para dar contraste à imagem
   overlay: { flex: 1, alignItems: 'center', paddingVertical: 40, backgroundColor: 'rgba(0,0,0,0.65)' },
   backButton: { position: 'absolute', top: 20, left: 25, zIndex: 10, padding: 10 },
   loginCard: { alignItems: 'center' },
   header: { alignItems: 'center', marginBottom: 30 },
   neonTitle: { fontSize: 62, fontWeight: '900', color: '#ED145B', textShadowColor: 'rgba(237, 20, 91, 0.6)', textShadowRadius: 25 },
-  quote: { color: '#AAA', fontSize: 15, marginTop: 8 }, // Ajustado para cinza claro para ler melhor no escuro
+  quote: { color: '#AAA', fontSize: 15, marginTop: 8 },
   authErrorBanner: { backgroundColor: 'rgba(237, 20, 91, 0.15)', flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: 14, width: '100%', marginBottom: 20, borderWidth: 1, borderColor: '#ED145B' },
   authErrorText: { color: '#FFF', fontSize: 13, marginLeft: 10, fontWeight: '600' },
   inputWrapper: { width: '100%', marginBottom: 16 },
@@ -161,6 +156,7 @@ const styles = StyleSheet.create({
   inputContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(22, 22, 22, 0.8)', borderRadius: 18, borderWidth: 1.5, borderColor: '#333', paddingHorizontal: 16, height: 62 },
   inputError: { borderColor: '#ED145B' },
   input: { flex: 1, color: '#FFF', fontSize: 16, marginLeft: 12 },
+  errorText: { color: '#ED145B', fontSize: 12, marginTop: 4, marginLeft: 8 }, // ✅ estilo para erros inline
   rowLink: { flexDirection: 'row', alignSelf: 'flex-end', marginBottom: 25, padding: 5 },
   linkGray: { color: '#999', fontSize: 14 },
   linkWhite: { color: '#ED145B', fontSize: 14, fontWeight: '800' },
