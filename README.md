@@ -115,8 +115,12 @@ https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 O **Fiap Room Switch App** demonstra como a tecnologia pode transformar a gestão acadêmica. A escolha do Expo Router e da Context API garantiu um sistema fluido e escalável, entregando uma solução prática para o monitoramento de salas em tempo real e consolidando nosso aprendizado técnico em desenvolvimento mobile.
 
 ### Versões Anteriores
+
+Video Rapido do Projeto
+https://youtube.com/shorts/j4lzdEXkSJk?feature=share
+
 ### 1. Tela Inicial
-![menu_principal](https://github.com/user-attachments/assets/2d3e36df-0290-4424-ac94-9c2f613556ae)
+![telaincial](https://github.com/user-attachments/assets/d20de10d-332e-47b2-b15b-b1ea38a1037c)
 
 ### 2. Tela Menu
 ![menu_principal](https://github.com/user-attachments/assets/3c3726d4-04e5-4cc2-9a00-c204e983b573)
