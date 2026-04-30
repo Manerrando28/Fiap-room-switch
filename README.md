@@ -9,12 +9,15 @@
 Turma: **3ESPH**
 
 
-# 🚪 FIAP Room Switch
-
-Sistema desenvolvido para gerenciamento e controle de salas, permitindo alternância (switch) entre estados de forma simples e eficiente.
 
 ## 📌 Sobre o Projeto
-Este sistema tem como objetivo principal otimizar a **gestão da infraestrutura acadêmica da FIAP**, oferecendo uma solução inteligente para o controle de espaços físicos.
+
+O **Fiap Room Switch** é uma aplicação criada com o objetivo de simular e gerenciar o controle de ambientes (salas).
+Este sistema tem como objetivo principal otimizar a **gestão da infraestrutura acadêmica da FIAP**, oferecendo uma solução inteligente para o controle de espaços físicos, apresentando:
+
+- Automação de ambientes
+- Controle de ocupação
+- Simulação de dispositivos inteligentes (IoT)
 
 O problema central que ele resolve é a dificuldade na organização e monitoramento das salas de aula e laboratórios. Através de uma interface intuitiva, a plataforma permite a **visualização em tempo real do status de cada ambiente**, classificando-os de forma clara entre "Livre", "Ocupada" ou "Em Manutenção".
 
