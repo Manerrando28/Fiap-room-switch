@@ -65,11 +65,6 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 
 **5.** Escaneie o QR Code no Expo Go para rodar no celular.
 
-## 🎯 Video Rapido
-Abaixo vai o link para o nosso video rapido mostrando o projeto!
-
-https://youtube.com/shorts/j4lzdEXkSJk?feature=share
-
 
 ## 📸 Printscreen's das Telas
 
