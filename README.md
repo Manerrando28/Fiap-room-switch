@@ -74,7 +74,7 @@ https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 ## 📸Printscreen's das Telas
 
 ### 1. Tela Inicial
-![telaincial](https://github.com/user-attachments/assets/f2e6c0f2-f022-471d-8d9c-1)
+![telaincial](https://github.com/user-attachments/assets/7fb6a56d-73fd-49d2-bb9c-66ecca5f1b2c)
 
 ### 2. Tela Menu
 ![menu_principal](https://github.com/user-attachments/assets/5b619c01-d2af-4f9c-bdbc-81be91b85f17)
