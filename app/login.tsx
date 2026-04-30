@@ -97,7 +97,6 @@ export default function Login() {
                     autoCapitalize="none"
                   />
                 </View>
-                {/* ✅ Erro inline abaixo do campo */}
                 {submitted && errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
               </View>
 
@@ -114,7 +113,6 @@ export default function Login() {
                     onChangeText={setSenha}
                   />
                 </View>
-                {/* ✅ Erro inline abaixo do campo */}
                 {submitted && errors.senha ? <Text style={styles.errorText}>{errors.senha}</Text> : null}
               </View>
 
@@ -125,7 +123,7 @@ export default function Login() {
 
               <Pressable 
                 onPress={handleLogin} 
-                disabled={loading || !email || !senha || !!errors.email || !!errors.senha} // ✅ corrigido
+                disabled={loading || !email || !senha || !!errors.email || !!errors.senha}
                 style={[styles.mainButton, (loading || !!errors.email || !!errors.senha) && { opacity: 0.7 }]}
               >
                 {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>ENTRAR</Text>}
@@ -156,7 +154,7 @@ const styles = StyleSheet.create({
   inputContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(22, 22, 22, 0.8)', borderRadius: 18, borderWidth: 1.5, borderColor: '#333', paddingHorizontal: 16, height: 62 },
   inputError: { borderColor: '#ED145B' },
   input: { flex: 1, color: '#FFF', fontSize: 16, marginLeft: 12 },
-  errorText: { color: '#ED145B', fontSize: 12, marginTop: 4, marginLeft: 8 }, // ✅ estilo para erros inline
+  errorText: { color: '#ED145B', fontSize: 12, marginTop: 4, marginLeft: 8 },
   rowLink: { flexDirection: 'row', alignSelf: 'flex-end', marginBottom: 25, padding: 5 },
   linkGray: { color: '#999', fontSize: 14 },
   linkWhite: { color: '#ED145B', fontSize: 14, fontWeight: '800' },
