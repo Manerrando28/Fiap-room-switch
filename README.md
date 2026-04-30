@@ -100,7 +100,7 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 </p>
 
 ### 🎬 **Vídeo/GIF - Recording do APP**
-
+https://github.com/user-attachments/assets/55901af7-1b3a-426b-a97a-e4adfbc729a9
 
 
 ## 🛠️Decisões Técnicas
