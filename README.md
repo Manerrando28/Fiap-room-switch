@@ -1,4 +1,4 @@
-# CP2 - App de Gestão de Salas (Fiap Room Switch App)
+# CP2 - App de Gestão de Salas (Sistema de Gestão de Infra Acadêmica)
 
 ## 👥 Integrantes do Grupo:
 - Gabriel Guilherme Leste **RM558638**
@@ -84,13 +84,22 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 </p>
 
 ### 4. Tela Menu
-![menu_principal](https://github.com/user-attachments/assets/5b619c01-d2af-4f9c-bdbc-81be91b85f17)
+<p align="center">
+  <img width="277" height="594" alt="Captura de tela 2026-04-30 090142" src="https://github.com/user-attachments/assets/8ee4ba95-39ef-4fc2-8eb1-ddc23038130c" />
+</p>
+
 
 ### 5. Tela Salas
-![tela_da_sala](https://github.com/user-attachments/assets/56c2ff36-c58e-4dc5-b106-92574369fb5b)
+<p align="center">
+  <img width="280" height="600" alt="Captura de tela 2026-04-30 090245" src="https://github.com/user-attachments/assets/56617fd4-fddf-497f-bf2b-52b3774059ba" />
+</p>
 
 ### 6. Tela Reportar
-![tela_reportar](https://github.com/user-attachments/assets/cbbd2dfd-6127-418a-be1d-234db295282c)
+<p align="center">
+  <img width="280" height="614" alt="Captura de tela 2026-04-30 090405" src="https://github.com/user-attachments/assets/4a9b7864-1a45-4314-95c8-dedddbbddfe1" />
+</p>
+
+### 🎬 **Vídeo/GIF - Recording do APP**
 
 
 
@@ -120,27 +129,6 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 
 ## 📌 Conclusões Finais
 O **Fiap Room Switch App** demonstra como a tecnologia pode transformar a gestão acadêmica. A escolha do Expo Router e da Context API garantiu um sistema fluido e escalável, entregando uma solução prática para o monitoramento de salas em tempo real e consolidando nosso aprendizado técnico em desenvolvimento mobile.
-
-### ⚙️ Versões Anteriores
-
-Video Rapido do Projeto
-https://youtube.com/shorts/j4lzdEXkSJk?feature=share
-
-### 1. Tela Inicial
-![telaincial](https://github.com/user-attachments/assets/d20de10d-332e-47b2-b15b-b1ea38a1037c)
-
-### 2. Tela Menu
-![menu_principal](https://github.com/user-attachments/assets/3c3726d4-04e5-4cc2-9a00-c204e983b573)
-
-
-### 3. Tela Salas
-![tela_da_sala](https://github.com/user-attachments/assets/c2f0a00b-eb35-4a27-92f1-87d7946241ef)
-
-
-### 4. Tela Reportar
-![tela_reportar](https://github.com/user-attachments/assets/0bf64ada-4c63-4522-a204-ad66a15fb7cc)
-
-*Link do vídeo do Youtube* (https://youtube.com/shorts/vMInhhiL7l8?si=QklPxMjBnzWfehp3).
 
 ### 🙏 Agradecimentos
 Agradecemos à FIAP pela estrutura e aos professores pela orientação estratégica. Este projeto é o reflexo do conhecimento adquirido e do suporte oferecido pela instituição, fundamentais para nossa evolução como desenvolvedores.
