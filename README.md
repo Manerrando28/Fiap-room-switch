@@ -23,8 +23,21 @@ O problema central que ele resolve é a dificuldade na organização e monitoram
 
 Ao centralizar essas informações, a ferramenta não apenas simplifica a consulta rápida para alunos e colaboradores, mas também atua estrategicamente na eficiência operacional. Com um controle preciso da disponibilidade, torna-se possível otimizar a alocação dos espaços, reduzindo drasticamente os conflitos de agendamento e garantindo que os recursos da instituição sejam utilizados em sua capacidade máxima.
 
+## 🚀 Tecnologias Utilizadas
+
+- Java / Spring Boot *(ajusta aqui se estiver diferente)*
+- REST API
+- Maven
+- Banco de dados (H2 / outro, se tiver)
 
 ## 🛠️Funcionalidades Implementadas
+
+- ✅ Cadastro de salas
+- 🔄 Alternância de estado (ligado/desligado)
+- 📊 Consulta de status das salas
+- 🧩 Estrutura baseada em boas práticas (POO + APIs REST)
+
+### Mais detalhadamente...
 O sistema foi estruturado com foco em usabilidade e eficiência técnica, implementando recursos que garantem uma experiência de usuário intuitiva e um gerenciamento de dados robusto:
 
 **Monitoramento Visual Dinâmico:** O núcleo da aplicação conta com uma listagem inteligente de salas, onde o status de disponibilidade é comunicado instantaneamente através de ícones visuais e indicadores de cor, facilitando a identificação imediata de ambientes prontos para uso ou em manutenção.
