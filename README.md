@@ -74,19 +74,16 @@ https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 ## 📸Printscreen's das Telas
 
 ### 1. Tela Inicial
-![telaincial](https://github.com/user-attachments/assets/63804d1f-0a0a-4cf4-8e38-1068d9b92801)
-
+![telaincial](https://github.com/user-attachments/assets/f2e6c0f2-f022-471d-8d9c-1
 
 ### 2. Tela Menu
-![menu_principal](https://github.com/user-attachments/assets/21cd418c-a6a1-40da-9246-7f468de0eb84)
-
+![menu_principal](https://github.com/user-attachments/assets/5b619c01-d2af-4f9c-bdbc-81be91b85f17)
 
 ### 3. Tela Salas
-![tela_da_sala](https://github.com/user-attachments/assets/7e022068-d00e-44af-ab1f-0ea7de378a19)
-
+![tela_da_sala](https://github.com/user-attachments/assets/56c2ff36-c58e-4dc5-b106-92574369fb5b)
 
 ### 4. Tela Reportar
-![tela_reportar](https://github.com/user-attachments/assets/03b78365-5bd2-418b-89b4-2fdb29e1052d)
+![tela_reportar](https://github.com/user-attachments/assets/cbbd2dfd-6127-418a-be1d-234db295282c)
 
 
 
