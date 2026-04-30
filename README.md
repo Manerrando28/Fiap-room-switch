@@ -9,6 +9,10 @@
 Turma: **3ESPH**
 
 
+# 🚪 FIAP Room Switch
+
+Sistema desenvolvido para gerenciamento e controle de salas, permitindo alternância (switch) entre estados de forma simples e eficiente.
+
 ## 📌 Sobre o Projeto
 Este sistema tem como objetivo principal otimizar a **gestão da infraestrutura acadêmica da FIAP**, oferecendo uma solução inteligente para o controle de espaços físicos.
 
