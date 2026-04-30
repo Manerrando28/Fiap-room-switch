@@ -1,4 +1,4 @@
-# CP1 - App de Gestão de Salas (Fiap Room Switch App)
+# CP2 - App de Gestão de Salas (Fiap Room Switch App)
 
 ## 👥 Integrantes do Grupo:
 - Gabriel Guilherme Leste **RM558638**
@@ -69,15 +69,27 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 ## 📸 Printscreen's das Telas
 
 ### 1. Tela Inicial
-![telaincial](https://github.com/user-attachments/assets/7fb6a56d-73fd-49d2-bb9c-66ecca5f1b2c)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2dd2408b-5dcc-4c88-923a-a8a1608c88bc" width="300" />
+</p>
 
-### 2. Tela Menu
+### 2. Tela (Login)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8bf3121d-4518-4631-907f-42c250c68800" width="300" />
+</p>
+
+### 3. Tela (Cadastro)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c0bad0c9-a8bc-448f-8f28-2da2acf1f8da" width="300" />
+</p>
+
+### 4. Tela Menu
 ![menu_principal](https://github.com/user-attachments/assets/5b619c01-d2af-4f9c-bdbc-81be91b85f17)
 
-### 3. Tela Salas
+### 5. Tela Salas
 ![tela_da_sala](https://github.com/user-attachments/assets/56c2ff36-c58e-4dc5-b106-92574369fb5b)
 
-### 4. Tela Reportar
+### 6. Tela Reportar
 ![tela_reportar](https://github.com/user-attachments/assets/cbbd2dfd-6127-418a-be1d-234db295282c)
 
 
