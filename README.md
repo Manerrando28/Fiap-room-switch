@@ -116,8 +116,7 @@ O **Fiap Room Switch App** demonstra como a tecnologia pode transformar a gestã
 
 ### Versões Anteriores
 ### 1. Tela Inicial
-![telaincial](https://github.com/user-attachments/assets/d20de10d-332e-47b2-b15b-b1ea38a1037c)
-
+![menu_principal](https://github.com/user-attachments/assets/2d3e36df-0290-4424-ac94-9c2f613556ae)
 
 ### 2. Tela Menu
 ![menu_principal](https://github.com/user-attachments/assets/3c3726d4-04e5-4cc2-9a00-c204e983b573)
