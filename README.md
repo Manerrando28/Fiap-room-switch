@@ -1,6 +1,6 @@
 # CP1 - App de Gestão de Salas (Fiap Room Switch App)
 
-## 👥Integrantes do Grupo:
+## 👥 Integrantes do Grupo:
 - Gabriel Guilherme Leste **RM558638**
 - Gustavo Viega Martins Lopes **RM555885**
 - Kaio Drago Lima Souza **RM556095**
@@ -30,7 +30,7 @@ Ao centralizar essas informações, a ferramenta não apenas simplifica a consul
 - Maven
 - Banco de dados (H2 / outro, se tiver)
 
-## 🛠️Funcionalidades Implementadas
+## 🛠️ Funcionalidades Implementadas
 
 - ✅ Cadastro de salas
 - 🔄 Alternância de estado (ligado/desligado)
@@ -47,7 +47,7 @@ O sistema foi estruturado com foco em usabilidade e eficiência técnica, implem
 **Gerenciamento de Estado Centralizado:** No backend do front-end, a aplicação utiliza um contexto global (SalaContext). Essa tecnologia permite que as informações sobre o status das salas sejam sincronizadas em tempo real por toda a plataforma, assegurando a integridade dos dados e uma manutenção de código muito mais escalável.
 
 
-## 💻Como Rodar o Projeto?
+## 💻 Como Rodar o Projeto?
 ### Pré-requisitos:
 - Node.js (versão LTS);
 - Expo CLI (ou usar npx expo);
@@ -71,7 +71,7 @@ Abaixo vai o link para o nosso video rapido mostrando o projeto!
 https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 
 
-## 📸Printscreen's das Telas
+## 📸 Printscreen's das Telas
 
 ### 1. Tela Inicial
 ![telaincial](https://github.com/user-attachments/assets/7fb6a56d-73fd-49d2-bb9c-66ecca5f1b2c)
@@ -111,10 +111,10 @@ https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 - Layout responsivo com Dimensions e estilos flexíveis.
 
 
-## 📌Conclusões Finais
+## 📌 Conclusões Finais
 O **Fiap Room Switch App** demonstra como a tecnologia pode transformar a gestão acadêmica. A escolha do Expo Router e da Context API garantiu um sistema fluido e escalável, entregando uma solução prática para o monitoramento de salas em tempo real e consolidando nosso aprendizado técnico em desenvolvimento mobile.
 
-### Versões Anteriores
+### ⚙️ Versões Anteriores
 
 Video Rapido do Projeto
 https://youtube.com/shorts/j4lzdEXkSJk?feature=share
