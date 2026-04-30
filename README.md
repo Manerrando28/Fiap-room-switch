@@ -74,21 +74,20 @@ https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 ## 📸Printscreen's das Telas
 
 ### 1. Tela Inicial
-![telaincial](https://github.com/user-attachments/assets/d20de10d-332e-47b2-b15b-b1ea38a1037c)
+![telaincial](https://github.com/user-attachments/assets/63804d1f-0a0a-4cf4-8e38-1068d9b92801)
 
 
 ### 2. Tela Menu
-![menu_principal](https://github.com/user-attachments/assets/3c3726d4-04e5-4cc2-9a00-c204e983b573)
+![menu_principal](https://github.com/user-attachments/assets/21cd418c-a6a1-40da-9246-7f468de0eb84)
 
 
 ### 3. Tela Salas
-![tela_da_sala](https://github.com/user-attachments/assets/c2f0a00b-eb35-4a27-92f1-87d7946241ef)
+![tela_da_sala](https://github.com/user-attachments/assets/7e022068-d00e-44af-ab1f-0ea7de378a19)
 
 
 ### 4. Tela Reportar
-![tela_reportar](https://github.com/user-attachments/assets/0bf64ada-4c63-4522-a204-ad66a15fb7cc)
+![tela_reportar](https://github.com/user-attachments/assets/03b78365-5bd2-418b-89b4-2fdb29e1052d)
 
-*Link do vídeo do Youtube* (https://youtube.com/shorts/vMInhhiL7l8?si=QklPxMjBnzWfehp3).
 
 
 ## 🛠️Decisões Técnicas
@@ -117,6 +116,24 @@ https://youtube.com/shorts/j4lzdEXkSJk?feature=share
 
 ## 📌Conclusões Finais
 O **Fiap Room Switch App** demonstra como a tecnologia pode transformar a gestão acadêmica. A escolha do Expo Router e da Context API garantiu um sistema fluido e escalável, entregando uma solução prática para o monitoramento de salas em tempo real e consolidando nosso aprendizado técnico em desenvolvimento mobile.
+
+### Versões Anteriores
+### 1. Tela Inicial
+![telaincial](https://github.com/user-attachments/assets/d20de10d-332e-47b2-b15b-b1ea38a1037c)
+
+
+### 2. Tela Menu
+![menu_principal](https://github.com/user-attachments/assets/3c3726d4-04e5-4cc2-9a00-c204e983b573)
+
+
+### 3. Tela Salas
+![tela_da_sala](https://github.com/user-attachments/assets/c2f0a00b-eb35-4a27-92f1-87d7946241ef)
+
+
+### 4. Tela Reportar
+![tela_reportar](https://github.com/user-attachments/assets/0bf64ada-4c63-4522-a204-ad66a15fb7cc)
+
+*Link do vídeo do Youtube* (https://youtube.com/shorts/vMInhhiL7l8?si=QklPxMjBnzWfehp3).
 
 ### 🙏 Agradecimentos
 Agradecemos à FIAP pela estrutura e aos professores pela orientação estratégica. Este projeto é o reflexo do conhecimento adquirido e do suporte oferecido pela instituição, fundamentais para nossa evolução como desenvolvedores.
